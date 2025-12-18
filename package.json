@@ -1,7 +1,7 @@
 {
   "name": "@taylabs/keys-express",
   "version": "1.0.0",
-  "description": "Express SDK for TayLabs/Auth service",
+  "description": "Express SDK for TayLabs/Keys service",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
