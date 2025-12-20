@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import AppError from './types/AppError';
 import HttpStatus from './types/HttpStatus.enum';
 import { ResponseBody } from './types/ResponseBody';
+import axios from 'axios';
 
 const config = (options: { baseUrl: string; serviceName: string }) => {
 	return {
@@ -11,46 +12,45 @@ const config = (options: { baseUrl: string; serviceName: string }) => {
 				try {
 					const apiKey = req.headers['x-api-key'];
 
-					// Validate api key via api call
-					const response = await fetch(
+					const response = await axios.post(
 						`${options.baseUrl}/api/v1/services/${options.serviceName}/keys/verify`,
 						{
-							method: 'POST',
-							body: JSON.stringify({
-								key: apiKey,
-								scopes,
-							}),
+							key: apiKey,
+							scopes,
+						},
+						{
 							headers: {
 								'Content-Type': 'application/json',
 							},
 						}
 					);
 
-					if (!response.ok) {
+					if (!response.data.success) {
 						throw new AppError(
-							'Failed to validate api keys service',
-							HttpStatus.NOT_FOUND
-						);
-					}
-
-					const body = (await response.json()) as ResponseBody;
-
-					if (!body.success) {
-						throw new AppError(
-							body.message,
+							response.data.message,
 							response.status as (typeof HttpStatus)[keyof typeof HttpStatus]
 						);
-					} else {
-						// User is authenticated
-						next();
 					}
 				} catch (error) {
-					next(
-						new AppError(
-							'Internal error validating api key',
+					if (axios.isAxiosError(error)) {
+						if (process.env.NODE_ENV === 'development')
+							console.error('Keys API Error:', {
+								code: error.code,
+								message: error.message,
+								data: error.response?.data,
+							});
+
+						throw new AppError(
+							error.message,
+							(error.status as (typeof HttpStatus)[keyof typeof HttpStatus]) ||
+								HttpStatus.INTERNAL_SERVER_ERROR
+						);
+					} else {
+						throw new AppError(
+							'Internal server error',
 							HttpStatus.INTERNAL_SERVER_ERROR
-						)
-					);
+						);
+					}
 				}
 			},
 	};
