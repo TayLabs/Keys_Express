@@ -36,6 +36,8 @@ var config = (options) => {
             response.data.message,
             response.status
           );
+        } else {
+          next();
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -45,14 +47,18 @@ var config = (options) => {
               message: error.message,
               data: error.response?.data
             });
-          throw new AppError(
-            error.message,
-            error.status || HttpStatus_enum_default.INTERNAL_SERVER_ERROR
+          next(
+            new AppError(
+              error.message,
+              error.status || HttpStatus_enum_default.INTERNAL_SERVER_ERROR
+            )
           );
         } else {
-          throw new AppError(
-            "Internal server error",
-            HttpStatus_enum_default.INTERNAL_SERVER_ERROR
+          next(
+            new AppError(
+              "Internal server error",
+              HttpStatus_enum_default.INTERNAL_SERVER_ERROR
+            )
           );
         }
       }

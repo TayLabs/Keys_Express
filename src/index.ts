@@ -30,6 +30,8 @@ const config = (options: { baseUrl: string; serviceName: string }) => {
 							response.data.message,
 							response.status as (typeof HttpStatus)[keyof typeof HttpStatus]
 						);
+					} else {
+						next();
 					}
 				} catch (error) {
 					if (axios.isAxiosError(error)) {
@@ -40,15 +42,19 @@ const config = (options: { baseUrl: string; serviceName: string }) => {
 								data: error.response?.data,
 							});
 
-						throw new AppError(
-							error.message,
-							(error.status as (typeof HttpStatus)[keyof typeof HttpStatus]) ||
-								HttpStatus.INTERNAL_SERVER_ERROR
+						next(
+							new AppError(
+								error.message,
+								(error.status as (typeof HttpStatus)[keyof typeof HttpStatus]) ||
+									HttpStatus.INTERNAL_SERVER_ERROR
+							)
 						);
 					} else {
-						throw new AppError(
-							'Internal server error',
-							HttpStatus.INTERNAL_SERVER_ERROR
+						next(
+							new AppError(
+								'Internal server error',
+								HttpStatus.INTERNAL_SERVER_ERROR
+							)
 						);
 					}
 				}
