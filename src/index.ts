@@ -3,17 +3,13 @@ import AppError from './types/AppError';
 import HttpStatus from './types/HttpStatus.enum';
 import { ResponseBody } from './types/ResponseBody';
 
-const config = (options: {
-	baseUrl: string;
-	serviceName: string;
-	apiKeyHeader?: string | 'x-api-key';
-}) => {
+const config = (options: { baseUrl: string; serviceName: string }) => {
 	return {
 		authenticateKey:
 			(...scopes: string[]): RequestHandler =>
 			async (req, _res, next) => {
 				try {
-					const apiKey = req.headers[options.apiKeyHeader || 'x-api-key'];
+					const apiKey = req.headers['x-api-key'];
 
 					// Validate api key via api call
 					const response = await fetch(

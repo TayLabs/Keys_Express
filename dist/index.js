@@ -27,7 +27,7 @@ var config = (options) => {
   return {
     authenticateKey: (...scopes) => async (req, _res, next) => {
       try {
-        const apiKey = req.headers[options.apiKeyHeader || "x-api-key"];
+        const apiKey = req.headers["x-api-key"];
         const response = await fetch(
           `${options.baseUrl}/api/v1/services/${options.serviceName}/keys/verify`,
           {
