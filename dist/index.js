@@ -37,6 +37,7 @@ var config = (options) => {
             }
           }
         );
+        console.log(response.data);
         if (!response.data.success) {
           throw new AppError(
             response.data.message,

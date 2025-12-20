@@ -24,7 +24,7 @@ const config = (options: { baseUrl: string; serviceName: string }) => {
 							},
 						}
 					);
-
+					console.log(response.data);
 					if (!response.data.success) {
 						throw new AppError(
 							response.data.message,
