@@ -1,5 +1,3 @@
-'use strict';
-
 // src/types/AppError.ts
 var AppError = class _AppError extends Error {
   constructor(message, statusCode) {
@@ -68,4 +66,4 @@ var config = (options) => {
   };
 };
 
-exports.config = config;
+export { config };
