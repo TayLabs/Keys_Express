@@ -8,13 +8,14 @@ const AppError_1 = __importDefault(require("./types/AppError"));
 const HttpStatus_enum_1 = __importDefault(require("./types/HttpStatus.enum"));
 const config = (options) => {
     return {
-        authenticateKey: (...scopes) => async (_req, _res, next) => {
+        authenticateKey: (...scopes) => async (req, _res, next) => {
             try {
+                const apiKey = req.headers[options.apiKeyHeader || 'x-api-key'];
                 // Validate api key via api call
                 const response = await fetch(`${options.baseUrl}/api/v1/services/${options.serviceName}/keys/verify`, {
                     method: 'POST',
                     body: JSON.stringify({
-                        key: options.apiKey,
+                        key: apiKey,
                         scopes,
                     }),
                     headers: {

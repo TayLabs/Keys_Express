@@ -5,21 +5,23 @@ import { ResponseBody } from './types/ResponseBody';
 
 const config = (options: {
 	baseUrl: string;
-	apiKey: string;
 	serviceName: string;
+	apiKeyHeader?: string | 'x-api-key';
 }) => {
 	return {
 		authenticateKey:
 			(...scopes: string[]): RequestHandler =>
-			async (_req, _res, next) => {
+			async (req, _res, next) => {
 				try {
+					const apiKey = req.headers[options.apiKeyHeader || 'x-api-key'];
+
 					// Validate api key via api call
 					const response = await fetch(
 						`${options.baseUrl}/api/v1/services/${options.serviceName}/keys/verify`,
 						{
 							method: 'POST',
 							body: JSON.stringify({
-								key: options.apiKey,
+								key: apiKey,
 								scopes,
 							}),
 							headers: {
