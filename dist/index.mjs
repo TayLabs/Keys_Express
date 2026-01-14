@@ -23,7 +23,7 @@ var config = (options) => {
           `${options.baseUrl}/api/v1/keys/verify`,
           {
             key: apiKey,
-            scopes
+            scopes: scopes.map((scope) => `${options.serviceName}:${scope}`)
           },
           {
             headers: {

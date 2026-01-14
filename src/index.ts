@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
 import AppError from './types/AppError';
 import HttpStatus from './types/HttpStatus.enum';
-import { ResponseBody } from './types/ResponseBody';
 import axios from 'axios';
 
 const config = (options: { baseUrl: string; serviceName: string }) => {
@@ -16,7 +15,7 @@ const config = (options: { baseUrl: string; serviceName: string }) => {
             `${options.baseUrl}/api/v1/keys/verify`,
             {
               key: apiKey,
-              scopes,
+              scopes: scopes.map((scope) => `${options.serviceName}:${scope}`),
             },
             {
               headers: {
