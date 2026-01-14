@@ -26,7 +26,7 @@ var config = (options) => {
       try {
         const apiKey = req.headers["x-api-key"];
         const response = await axios__default.default.post(
-          `${options.baseUrl}/api/v1/services/${options.serviceName}/keys/verify`,
+          `${options.baseUrl}/api/v1/keys/verify`,
           {
             key: apiKey,
             scopes
